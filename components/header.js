@@ -2,10 +2,23 @@ import { ShoppingCartIcon, ArrowLeftIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const router = useRouter();
   const [ishomepage, setishomepage] = useState(true);
+  const [cartCount, setcartCount] = useState(null);
+  const cartItems = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    if (cartItems && cartItems.length) {
+      let count = 0;
+      cartItems.map((item) => {
+        count = count + item.count
+      })
+      setcartCount(count);
+    }
+  }, [cartItems])
 
   useEffect(() => {
     setishomepage(router.asPath === '/');
@@ -23,7 +36,12 @@ export default function Header() {
         }
         
       </div>
-      <div className="flex justify-end"><ShoppingCartIcon className="w-6 h-6"/></div>
+      <div className="flex justify-end relative">
+        <ShoppingCartIcon className="w-6 h-6"/>
+        {
+          cartCount && <span className="rounded-full bg-red-600 w-4 h-4 text-white text-xs flex items-center justify-center absolute -right-2 -top-2">{cartCount}</span>
+        }
+      </div>
     </div>
   )
 }

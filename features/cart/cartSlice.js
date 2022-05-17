@@ -12,14 +12,20 @@ export const cartSlice = createSlice({
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes
       // state.value += 1
-      const arr = [...state];
+      
       // const existingItem = state.cart.length && state.cart.find(({productId}) => productId === action.payload);
-      console.log(arr);
-      const cartObj = {
-        productId: action.payload,
-        count: 1
+      const result = state.find( ({ productId }) => productId === action.payload );
+      const resultIndex = state.findIndex( ({ productId }) => productId === action.payload );
+      
+      if (result && resultIndex > -1) {
+        state[resultIndex].count = result.count + 1;
+      } else {
+        const cartObj = {
+          productId: action.payload,
+          count: 1
+        }
+        state.push(cartObj);
       }
-      state.push(cartObj);
     },
     /* decrement: (state) => {
       state.value -= 1

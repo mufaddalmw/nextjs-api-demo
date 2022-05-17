@@ -7,7 +7,7 @@ import { addToCart } from "../../features/cart/cartSlice";
 
 
 const Product = () => {
-  const cartItems = useSelector((state) => state.cart)
+  const cartItems = useSelector((state) => state.cart);
 
   useEffect(() => {
     console.log('cartItems', cartItems);
