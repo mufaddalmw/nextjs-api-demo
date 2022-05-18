@@ -37,10 +37,14 @@ export default function Header() {
         
       </div>
       <div className="flex justify-end relative">
-        <ShoppingCartIcon className="w-6 h-6"/>
-        {
-          cartCount && <span className="rounded-full bg-red-600 w-4 h-4 text-white text-xs flex items-center justify-center absolute -right-2 -top-2">{cartCount}</span>
-        }
+        <Link href="/cart">
+          <a>
+            <ShoppingCartIcon className="w-6 h-6"/>
+            {
+              cartCount && <span className="rounded-full bg-red-600 w-4 h-4 text-white text-xs flex items-center justify-center absolute -right-2 -top-2">{cartCount}</span>
+            }
+          </a>
+        </Link>
       </div>
     </div>
   )
