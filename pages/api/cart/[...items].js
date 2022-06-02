@@ -7,12 +7,12 @@ export default function handler(req, res) {
     const arr = sitem.split("_");
     if (arr.length > 1) {
       const itemObj = {
-        id: arr[0],
-        quantity: arr[1]
+        id: arr?.[0],
+        quantity: arr?.[1]
       }
   
       const result = products.find( ({ id }) => id === Number(itemObj.id) );
-      result.quantity = itemObj.quantity
+      result.quantity = Number(itemObj.quantity)
       cartProduct.push(result);
     }
   });

@@ -27,16 +27,27 @@ export const cartSlice = createSlice({
         state.push(cartObj);
       }
     },
-    /* decrement: (state) => {
-      state.value -= 1
+    decrement: (state, action) => {
+      const result = state.find( ({ productId }) => productId === action.payload );
+      const resultIndex = state.findIndex( ({ productId }) => productId === action.payload );
+      if (result && resultIndex > -1) {
+        state[resultIndex].count -= 1;
+      }
     },
-    incrementByAmount: (state, action) => {
+    increment: (state, action) => {
+      const result = state.find( ({ productId }) => productId === action.payload );
+      const resultIndex = state.findIndex( ({ productId }) => productId === action.payload );
+      if (result && resultIndex > -1) {
+        state[resultIndex].count += 1;
+      }
+    },
+    /* incrementByAmount: (state, action) => {
       state.value += action.payload
     }, */
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { addToCart } = cartSlice.actions
+export const { addToCart, decrement, increment } = cartSlice.actions
 
 export default cartSlice.reducer
