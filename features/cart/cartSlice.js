@@ -27,6 +27,21 @@ export const cartSlice = createSlice({
         state.push(cartObj);
       }
     },
+    removeFromCart: (state, action) => {
+      const result = state.find( ({ productId }) => productId === action.payload );
+      const resultIndex = state.findIndex( ({ productId }) => productId === action.payload );
+      
+      if (result && resultIndex > -1) {
+        state[resultIndex].count = result.count + 1;
+      } else {
+        const cartObj = {
+          productId: action.payload,
+          count: 1
+        }
+        state.push(cartObj);
+      }
+    },
+
     decrement: (state, action) => {
       const result = state.find( ({ productId }) => productId === action.payload );
       const resultIndex = state.findIndex( ({ productId }) => productId === action.payload );

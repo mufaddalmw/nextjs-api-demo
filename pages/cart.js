@@ -31,22 +31,30 @@ export default function Home() {
           console.log(data);
         })
     }
-  }, [])
+  }, []);
 
   /* update product quantity state */
   useEffect(() => {
     if (products?.length) {
+      const id_quantity = [];
       products.map(({id, quantity}) => {
-        const id_quantity = {id, quantity};
-        setproductQty(prevState => [...prevState, id_quantity]);
+        id_quantity.push({id, quantity});
       });
+      setproductQty(id_quantity);
     }
-  }, [products])
+  }, [products]);
 
-  /* increamentQty */
-  const increamentQty = (id) => {
-    // setproductQty();
-    dispatch(decrement(id));
+  /* updateQty */
+  const updateQty = (productId, type) => {
+    const productArr = productQty;
+    const itemIndex = productArr.findIndex( ({ id }) => id === productId );
+    const item = productArr[itemIndex]
+    if (item.quantity > 1 || type === 'plus') {
+      item.quantity = type === 'plus' ? item.quantity + 1 : item.quantity - 1;
+      productArr[itemIndex] = item
+      setproductQty(productArr);
+      dispatch(type === 'plus' ? increment(productId) : decrement(productId));
+    }
   }
   
 
@@ -80,10 +88,9 @@ export default function Home() {
                   <div className="text-gray-700 text-sm">AED {product.price}</div>
                   <div className="text-gray-700 text-sm flex items-center">
                     Qty: 
-                    <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => dispatch(decrement(product.id))}>-</button> 
-                    <span className="mx-1 inline-block">{product.quantity}</span>
+                    <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => updateQty(product.id, 'minus')}>-</button> 
                     <span className="mx-1 inline-block">{productQty.find( ({ id }) => id === product.id )?.quantity}</span>
-                    <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => dispatch(increamentQty(product.id))}>+</button>
+                    <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => updateQty(product.id, 'plus')}>+</button>
                   </div>
                   
                 </div>
