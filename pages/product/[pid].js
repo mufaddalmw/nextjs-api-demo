@@ -19,6 +19,7 @@ const Product = () => {
   
   const [product, setProduct] = useState(null)
   const [isLoading, setLoading] = useState(false)
+  const [isAdded, setisAdded] = useState(false)
 
   useEffect(() => {
     if (pid) {
@@ -31,6 +32,16 @@ const Product = () => {
         })
     }
   }, [pid])
+
+  // add function
+  const add = () => {
+    setisAdded(!isAdded)
+    dispatch(addToCart(product.id));
+    setTimeout(() => {
+      setisAdded(false)
+    }, 1500);
+  }
+  
 
   if (isLoading) return <p>Loading...</p>
   if (!product) return <p>No profile data</p>
@@ -59,8 +70,8 @@ const Product = () => {
           </div>
           <p className="text-sm font-medium text-gray-900">AED {product.price}</p>
         </div>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={() => dispatch(addToCart(product.id))}>
-          Add to Cart
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={add}>
+          {isAdded ? 'Added' : 'Add to Cart'}
         </button>
       </div>
     </>
