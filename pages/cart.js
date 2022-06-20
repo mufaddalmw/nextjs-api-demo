@@ -73,7 +73,7 @@ export default function Home() {
         <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-1 xl:gap-x-8 w-2/4 mx-auto my-4">
           {
             products && products.map(product => (
-              <div key={product.id} className="flex">
+              <div key={product.id} className="flex w-full">
                 <div>
                   <Image
                     src={product.image}
@@ -83,20 +83,23 @@ export default function Home() {
                     className="w-full h-full object-center object-cover lg:w-full lg:h-full"
                   />
                 </div>
-                <div className="ml-4 ">
-                  <div className="font-bold text-gray-700">{product.title}</div>
-                  <div className="text-gray-700 text-sm">AED {product.price}</div>
-                  <div className="text-gray-700 text-sm flex items-center">
-                    Qty: 
-                    <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => updateQty(product.id, 'minus')}>-</button> 
-                    <span className="mx-1 inline-block">{productQty.find( ({ id }) => id === product.id )?.quantity}</span>
-                    <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => updateQty(product.id, 'plus')}>+</button>
+                <div className="flex grow justify-between">
+                  <div className="ml-4">
+                    <div className="font-bold text-gray-700">{product.title}</div>
+                    <div className="text-gray-700 text-sm">AED {product.price}</div>
+                    <div className="text-gray-700 text-sm flex items-center">
+                      Qty: 
+                      <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => updateQty(product.id, 'minus')}>-</button> 
+                      <span className="mx-1 inline-block">{productQty.find( ({ id }) => id === product.id )?.quantity}</span>
+                      <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => updateQty(product.id, 'plus')}>+</button>
+                    </div>                  
                   </div>
-                  
+                  <div className="text-gray-700 font-bold">AED {productQty.find( ({ id }) => id === product.id )?.quantity * product.price}</div>
                 </div>
               </div>
             ))
           }
+          <div className="border-solid border-gray-200 border-t font-bold text-right pt-1">AED 2120</div>
           {
             !products && <p>No Cart item</p>
           }
