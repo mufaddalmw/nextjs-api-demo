@@ -3,7 +3,7 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import Header from "../components/header"
-import { decrement, increment } from "../features/cart/cartSlice"
+import { decrement, increment, removeFromCart } from "../features/cart/cartSlice"
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
   const [productQty, setproductQty] = useState([]);
   const cartItems = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     if (cartItems.length) {
       setLoading(true)
@@ -28,10 +28,9 @@ export default function Home() {
         .then((data) => {
           setProducts(data)
           setLoading(false)
-          console.log(data);
         })
     }
-  }, []);
+  }, [cartItems]);
 
   /* update product quantity state */
   useEffect(() => {
@@ -56,7 +55,21 @@ export default function Home() {
       dispatch(type === 'plus' ? increment(productId) : decrement(productId));
     }
   }
+
+  /* TOTAL COST */
+  const handleTotalCost = () => {
+    let price = 0;
+    products && products.forEach(element => {
+      price += productQty.find( ({ id }) => id === element.id )?.quantity * element.price
+    });
+    return price.toFixed(2);
+  }
   
+  /* TOTAL SINGLE ITEM COST */
+  const handleSingleItemCost = (pid, price) => {
+    const cost = productQty.find( ({ id }) => id === pid )?.quantity * price;
+    return cost.toFixed(2);
+  }
 
   if (isLoading) return <p>Loading...</p>
   
@@ -87,19 +100,25 @@ export default function Home() {
                   <div className="ml-4">
                     <div className="font-bold text-gray-700">{product.title}</div>
                     <div className="text-gray-700 text-sm">AED {product.price}</div>
-                    <div className="text-gray-700 text-sm flex items-center">
+                    <div className="text-gray-700 text-sm flex items-center mt-2">
                       Qty: 
                       <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => updateQty(product.id, 'minus')}>-</button> 
                       <span className="mx-1 inline-block">{productQty.find( ({ id }) => id === product.id )?.quantity}</span>
                       <button className="w-5 h-5 bg-gray-200 text-gray-400 text-2xl inline-flex items-center justify-center mx-1 active:bg-gray-600" onClick={() => updateQty(product.id, 'plus')}>+</button>
                     </div>                  
-                  </div>
-                  <div className="text-gray-700 font-bold">AED {productQty.find( ({ id }) => id === product.id )?.quantity * product.price}</div>
+                    <div className="mt-2">
+                    <button className="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white text-xs py-1 px-2 border border-blue-500 hover:border-transparent rounded"
+                    onClick={() => dispatch(removeFromCart(product.id))}>
+                      Remove
+                    </button>
+                    </div>
+                  </div>                  
+                  <div className="text-gray-700 font-bold">AED {handleSingleItemCost(product.id, product.price)}</div>
                 </div>
               </div>
             ))
           }
-          <div className="border-solid border-gray-200 border-t font-bold text-right pt-1">AED 2120</div>
+          <div className="border-solid border-gray-200 border-t font-bold text-right pt-1">AED {handleTotalCost()}</div>
           {
             !products && <p>No Cart item</p>
           }
