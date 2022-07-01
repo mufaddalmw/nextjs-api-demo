@@ -10,6 +10,7 @@ export default function Home() {
   const [products, setProducts] = useState(null)
   const [isLoading, setLoading] = useState(false)
   const [productQty, setproductQty] = useState([]);
+  const [removeItems, setremoveItems] = useState({});
   const cartItems = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   
@@ -30,16 +31,19 @@ export default function Home() {
           setLoading(false)
         })
     }
-  }, [cartItems]);
+  }, []);
 
   /* update product quantity state */
   useEffect(() => {
     if (products?.length) {
       const id_quantity = [];
+      const removeObj = {};
       products.map(({id, quantity}) => {
         id_quantity.push({id, quantity});
+        removeObj[id] = false;
       });
       setproductQty(id_quantity);
+      setremoveItems(removeObj);
     }
   }, [products]);
 
@@ -71,6 +75,16 @@ export default function Home() {
     return cost.toFixed(2);
   }
 
+  /* HANDLE REMOVE ITEMS */
+  const handleRemoveItems = (id) => {
+    setremoveItems(prevState => ({
+      ...prevState,
+      [id]: true
+    }));
+    dispatch(removeFromCart(id));
+  }
+  
+
   if (isLoading) return <p>Loading...</p>
   
   return (
@@ -86,7 +100,7 @@ export default function Home() {
         <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-1 xl:gap-x-8 w-2/4 mx-auto my-4">
           {
             products && products.map(product => (
-              <div key={product.id} className="flex w-full">
+              <div key={product.id} className={`flex w-full ${removeItems[product.id] ? 'hidden' : ''}`}>
                 <div>
                   <Image
                     src={product.image}
@@ -108,7 +122,7 @@ export default function Home() {
                     </div>                  
                     <div className="mt-2">
                     <button className="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white text-xs py-1 px-2 border border-blue-500 hover:border-transparent rounded"
-                    onClick={() => dispatch(removeFromCart(product.id))}>
+                    onClick={() => handleRemoveItems(product.id)}>
                       Remove
                     </button>
                     </div>
